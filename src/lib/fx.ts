@@ -28,7 +28,7 @@ export function initFx(): Cleanup {
     cleanups.push(magnetic());
     cleanups.push(tilt());
   }
-  cleanups.push(avatars(finePointer, reduce));
+  cleanups.push(faces(finePointer, reduce));
   cleanups.push(journey(reduce));
 
   return () => cleanups.forEach((c) => c && c());
@@ -270,15 +270,16 @@ function journey(reduce: boolean): Cleanup {
   const flip = root.querySelector<HTMLElement>(".jr-flip")!;
   const bubble = root.querySelector<HTMLElement>(".jr-bubble")!;
   const bubbleText = bubble.querySelector("span")!;
-  const legF = root.querySelector<SVGGElement>(".wb-leg-f")!;
-  const legB = root.querySelector<SVGGElement>(".wb-leg-b")!;
-  const armF = root.querySelector<SVGGElement>(".wb-arm-f")!;
-  const armB = root.querySelector<SVGGElement>(".wb-arm-b")!;
   const fig = root.querySelector<HTMLElement>(".jr-fig")!;
-  const head = root.querySelector<HTMLElement>(".ah-walker")!;
-  let lookX = 0;
+  const sprites = new Map<string, HTMLElement>();
+  root.querySelectorAll<HTMLElement>(".jr-pose").forEach((img) => sprites.set(img.dataset.name || "", img));
+  // which way each pose faces in its artwork: 1 = right, -1 = left, 0 = either
+  const FACING: Record<string, number> = { walk: -1, back: 1, point: 1, "a-point": -1, holo: -1, laptop: 1 };
+  let shown = "";
+  let walkHold = 0;
+  let goingUp = false;
 
-  type Stop = { len: number; say: string; el: SVGCircleElement | null; wave: boolean };
+  type Stop = { len: number; say: string; el: SVGCircleElement | null; wave: boolean; pose: string };
   let mode: "path" | "bar" = "path";
   let ys: number[] = [],
     xs: number[] = [],
@@ -314,6 +315,7 @@ function journey(reduce: boolean): Cleanup {
         28,
       say: el.dataset.say || "",
       wave: el.hasAttribute("data-wave"),
+      pose: el.dataset.pose || "stand",
     }));
   }
 
@@ -332,7 +334,7 @@ function journey(reduce: boolean): Cleanup {
       svg.style.height = "0";
       const max = Math.max(1, docH - innerHeight);
       chs.forEach((c) =>
-        stops.push({ len: clamp((c.top - innerHeight * 0.5) / max, 0, 1), say: c.say, el: null, wave: c.wave })
+        stops.push({ len: clamp((c.top - innerHeight * 0.5) / max, 0, 1), say: c.say, el: null, wave: c.wave, pose: c.pose })
       );
       if (stops.length) stops[0].len = 0;
       hasStart = !!document.querySelector("[data-journey-start]");
@@ -386,11 +388,11 @@ function journey(reduce: boolean): Cleanup {
         y = toY;
       }
     };
-    const anchors: { y: number; say: string; wave: boolean }[] = [];
+    const anchors: { y: number; say: string; wave: boolean; pose: string }[] = [];
     chs.forEach((c, i) => {
       const side = (i % 2 === 0) === (firstSide === L) ? L : R;
       if (i === 0) {
-        anchors.push({ y: startY, say: c.say, wave: c.wave });
+        anchors.push({ y: startY, say: c.say, wave: c.wave, pose: c.pose });
         return;
       }
       const b = Math.max(c.top, y + 220);
@@ -400,7 +402,7 @@ function journey(reduce: boolean): Cleanup {
       d += ` C ${x} ${b - 50}, ${toX} ${b - 100}, ${toX} ${b}`;
       x = toX;
       y = b;
-      anchors.push({ y: b, say: c.say, wave: c.wave });
+      anchors.push({ y: b, say: c.say, wave: c.wave, pose: c.pose });
     });
     wiggle(Math.max(y + 10, docH - 60), x);
 
@@ -430,7 +432,7 @@ function journey(reduce: boolean): Cleanup {
       c.setAttribute("r", "7");
       c.setAttribute("class", "jr-stop");
       stopsG.appendChild(c);
-      stops.push({ len, say: a.say, el: c, wave: a.wave });
+      stops.push({ len, say: a.say, el: c, wave: a.wave, pose: a.pose });
     });
     built = true;
   }
@@ -465,16 +467,31 @@ function journey(reduce: boolean): Cleanup {
     if (!sticky) bubbleTimer = window.setTimeout(() => bubble.classList.remove("show"), 3600);
   }
 
-  function pose(a: number, bob: number) {
-    legF.setAttribute("transform", `rotate(${a} 42 8)`);
-    legB.setAttribute("transform", `rotate(${-a} 42 8)`);
-    armB.setAttribute("transform", `rotate(${a * 0.8} 42.5 -14)`);
-    armF.setAttribute("transform", `rotate(${-a * 0.8} 42.5 -14)`);
-    fig.style.transform = `translateY(${-bob}px) rotate(${a * 0.12}deg)`;
-    // the head looks where he's walking
-    lookX = lerp(lookX, Math.abs(a) > 1 || amp > 2 ? dir * 0.8 : 0, 0.08);
-    head.style.setProperty("--lx", lookX.toFixed(3));
-    head.style.setProperty("--ly", "0.12");
+  function show(name: string) {
+    if (name === shown || !sprites.has(name)) return;
+    sprites.get(shown)?.classList.remove("on");
+    sprites.get(name)!.classList.add("on");
+    if (name !== "walk" && name !== "back") {
+      fig.classList.remove("pop");
+      void fig.offsetWidth;
+      fig.classList.add("pop");
+    }
+    shown = name;
+  }
+
+  function pose(a: number, bob: number, px: number) {
+    const walking = walkHold > 0 && !reduce;
+    const name = walking ? (goingUp ? "back" : "walk") : stops[chapter]?.pose || "stand";
+    show(name);
+    if (walking) {
+      fig.style.transform = `translateY(${-bob}px) rotate(${a * 0.12}deg)`;
+      flip.style.transform = `scaleX(${(FACING[name] || 1) * dir})`;
+    } else {
+      fig.style.transform = "";
+      // strike the pose facing the content in the middle of the page
+      const towardCenter = px < document.documentElement.clientWidth / 2 ? 1 : -1;
+      flip.style.transform = `scaleX(${FACING[name] ? FACING[name] * towardCenter : 1})`;
+    }
   }
 
   function frame(now: number) {
@@ -488,16 +505,17 @@ function journey(reduce: boolean): Cleanup {
       target = lenAtY(scrollY + innerHeight * 0.62);
       if (cur < 0) cur = target;
       const prev = cur;
-      cur = reduce ? target : lerp(cur, target, 0.12);
+      cur = reduce || Math.abs(target - cur) < 4 ? target : lerp(cur, target, 0.14);
       const moved = Math.abs(cur - prev);
       const p = pointAt(cur);
       px = p.x;
       py = p.y;
       const dx = px - lastX;
       lastX = px;
+      if (moved > 0.3) goingUp = target < prev;
       if (Math.abs(dx) > 0.6) dir = dx > 0 ? 1 : -1;
-      else if (moved > 0.3) dir = target > prev ? 1 : -1;
-      step(moved, Math.abs(dx) > 2 ? Math.min(14, Math.abs(dx) * 0.9) : 0);
+      else if (moved > 0.3) dir = goingUp ? -1 : 1;
+      step(moved, Math.abs(dx) > 2 ? Math.min(14, Math.abs(dx) * 0.9) : 0, px);
       char.style.transform = `translate3d(${px - char.offsetWidth / 2}px, ${py - CHAR_H()}px, 0)`;
       char.style.opacity = hasStart ? String(clamp((scrollY - 30) / 140, 0, 1)) : "1";
       done.style.strokeDashoffset = String(total - cur);
@@ -518,8 +536,11 @@ function journey(reduce: boolean): Cleanup {
       const w = char.offsetWidth;
       px = 16 + cur * (vw - 32 - w) + w / 2;
       const movedPx = Math.abs(cur - prev) * (vw - 32 - w);
-      if (Math.abs(scrollDelta) > 0.5) dir = scrollDelta > 0 ? 1 : -1;
-      step(movedPx * 1.4 + Math.min(4, Math.abs(scrollDelta) * 0.2), 0);
+      if (Math.abs(scrollDelta) > 0.5) {
+        dir = scrollDelta > 0 ? 1 : -1;
+        goingUp = scrollDelta < 0;
+      }
+      step(movedPx * 1.4 + Math.min(4, Math.abs(scrollDelta) * 0.2), 0, px);
       char.style.transform = `translate3d(${px - w / 2}px, 0, 0)`;
       char.style.opacity = hasStart ? String(clamp((scrollY - 40) / 160, 0, 1)) : "1";
       root.style.setProperty("--bar", String(cur));
@@ -529,13 +550,13 @@ function journey(reduce: boolean): Cleanup {
       });
       onChapter(idx, px);
     }
-    flip.style.transform = `scaleX(${dir})`;
     raf = requestAnimationFrame(frame);
     void now;
   }
 
-  function step(moved: number, hop: number) {
-    const walking = moved > 0.25;
+  function step(moved: number, hop: number, px: number) {
+    const walking = moved > 0.5;
+    walkHold = walking ? 10 : Math.max(0, walkHold - 1);
     if (walking) {
       idleFor = 0;
       phase += moved / 7;
@@ -546,8 +567,8 @@ function journey(reduce: boolean): Cleanup {
     }
     if (reduce) amp = 0;
     const a = Math.sin(phase) * amp;
-    const bob = Math.abs(Math.cos(phase)) * (amp / 30) * 2.5 + hop;
-    pose(a, bob);
+    const bob = Math.abs(Math.cos(phase)) * (amp / 30) * 6 + hop;
+    pose(a, bob, px);
     root.classList.toggle("walking", walking);
   }
 
@@ -566,10 +587,6 @@ function journey(reduce: boolean): Cleanup {
     if (!s) return;
     waving = s.wave;
     root.classList.toggle("waving", waving);
-    head.dataset.mood = "happy";
-    window.setTimeout(() => {
-      if (!waving) head.dataset.mood = "";
-    }, 1600);
     say(s.say, s.wave);
   }
 
@@ -596,120 +613,132 @@ function journey(reduce: boolean): Cleanup {
   };
 }
 
-/* ── Living avatar: eyes follow the cursor, blinks, moods ────── */
-function avatars(finePointer: boolean, reduce: boolean): Cleanup {
-  const heads = [...document.querySelectorAll<HTMLElement>(".ah")];
-  if (!heads.length) return () => {};
+/* ── Hero face: expressions that react to the visitor ────────── */
+function faces(finePointer: boolean, reduce: boolean): Cleanup {
+  const me = document.querySelector<HTMLElement>(".me");
+  if (!me) return () => {};
+  const tiltEl = me.querySelector<HTMLElement>(".me-tilt")!;
+  const bubble = document.querySelector<HTMLElement>(".hero-bubble");
+  const text = bubble?.querySelector("span");
   const timers: number[] = [];
-  let px = innerWidth * 0.5,
-    py = innerHeight * 0.35,
-    hasPointer = false,
+  const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
+
+  const base = "smile";
+  let hold = 0; // until when a reaction holds before returning to base
+  let lastLine = "";
+  function set(face: string, line?: string, ms = 1800) {
+    me!.dataset.face = face;
+    hold = performance.now() + ms;
+    if (line && text && line !== lastLine) {
+      lastLine = line;
+      text.textContent = line;
+      bubble!.classList.remove("pop");
+      void bubble!.offsetWidth;
+      bubble!.classList.add("pop");
+    }
+  }
+
+  // what he says when the visitor hovers things
+  const hoverLines: [string, string, string][] = [
+    ["a[href='#work']", "speaking", "Ooh, good choice. Let's go!"],
+    ["a[href^='mailto:']", "laugh", "Yes! Let's talk."],
+    [".nav-links a, .mobile-menu a", "focused", "Know where you're headed? Respect."],
+    [".theme-toggle, .nav-actions .icon-btn", "surprised", "Lights! Dark or light, I'm ready."],
+    ["a, button", "smile", ""],
+  ];
+  const over = (e: Event) => {
+    const t = e.target as HTMLElement;
+    if (!t.closest || t.closest(".me")) return;
+    const r = me.getBoundingClientRect();
+    if (r.bottom < 0) return; // hero scrolled away
+    for (const [sel, face, line] of hoverLines) {
+      if (t.closest(sel)) {
+        set(face, line || undefined, 2200);
+        return;
+      }
+    }
+  };
+
+  // clicking him cycles reactions
+  const pokes: [string, string][] = [
+    ["surprised", "Whoa! You found me."],
+    ["laugh", "Haha, that tickles!"],
+    ["speaking", "I design products people actually enjoy using."],
+    ["think", "What should we build together...?"],
+    ["focused", "Okay, back to work. Scroll down!"],
+    ["confused", "You really like clicking, huh?"],
+  ];
+  let poke = 0;
+  const click = () => {
+    const [face, line] = pokes[poke++ % pokes.length];
+    me.classList.remove("boing");
+    void me.offsetWidth;
+    me.classList.add("boing");
+    set(face, line, 2600);
+  };
+
+  // idle moods: thinking when the visitor goes quiet, confused when the mouse leaves
+  let lastActive = performance.now();
+  let idleStage = 0;
+  const active = () => {
+    lastActive = performance.now();
+    if (idleStage) {
+      idleStage = 0;
+      set("laugh", "Oh hey, you're back!", 1600);
+    }
+  };
+  const leave = (e: PointerEvent) => {
+    if (!e.relatedTarget) set("confused", "Wait, where did you go?", 4000);
+  };
+
+  // gentle 3D tilt toward the cursor
+  let tx = 0,
+    ty = 0,
+    cx = 0,
+    cy = 0,
     raf = 0;
-
-  // blinking for every head, at natural random intervals
-  heads.forEach((h) => {
-    const blink = () => {
-      h.classList.add("blink");
-      timers.push(window.setTimeout(() => h.classList.remove("blink"), 130));
-      if (Math.random() < 0.2) {
-        timers.push(window.setTimeout(() => h.classList.add("blink"), 260));
-        timers.push(window.setTimeout(() => h.classList.remove("blink"), 390));
-      }
-      timers.push(window.setTimeout(blink, 2200 + Math.random() * 3800));
-    };
-    if (!reduce) timers.push(window.setTimeout(blink, 900 + Math.random() * 1500));
-  });
-
-  const lookers = heads.filter((h) => !h.classList.contains("ah-walker"));
-  const state = lookers.map(() => ({ x: 0, y: 0 }));
-
   const move = (e: PointerEvent) => {
-    px = e.clientX;
-    py = e.clientY;
-    hasPointer = true;
+    const r = me.getBoundingClientRect();
+    tx = clamp((e.clientX - (r.left + r.width / 2)) / innerWidth, -1, 1);
+    ty = clamp((e.clientY - (r.top + r.height / 2)) / innerHeight, -1, 1);
   };
-  addEventListener("pointermove", move, { passive: true });
-
-  // idle wandering when there's no mouse (phones) or it has gone still
-  let wanderX = 0,
-    wanderY = 0,
-    lastMove = 0;
-  const wander = () => {
-    wanderX = (Math.random() - 0.5) * 1.4;
-    wanderY = (Math.random() - 0.5) * 0.8;
-    timers.push(window.setTimeout(wander, 1400 + Math.random() * 2200));
-  };
-  wander();
-  const touch = () => (lastMove = performance.now());
-  addEventListener("pointermove", touch, { passive: true });
-
-  // moods from what the visitor is doing
-  const moodOn = (e: Event) => {
-    const t = (e.target as HTMLElement).closest?.("a, button, [data-cursor]");
-    lookers.forEach((h) => {
-      if (h.dataset.mood === "surprised") return;
-      h.dataset.mood = t ? "happy" : "";
-    });
-  };
-  if (finePointer) document.addEventListener("pointerover", moodOn);
-
-  const clickOff: Cleanup[] = lookers.map((h) => {
-    const lines = (h.dataset.lines || "").split("|").filter(Boolean);
-    let n = 0;
-    const bubble = h.parentElement?.querySelector<HTMLElement>(".hero-bubble span");
-    const click = () => {
-      h.dataset.mood = "surprised";
-      h.classList.remove("boing");
-      void h.offsetWidth;
-      h.classList.add("boing");
-      if (bubble && lines.length) {
-        bubble.textContent = lines[n++ % lines.length];
-        bubble.parentElement!.classList.remove("pop");
-        void bubble.parentElement!.offsetWidth;
-        bubble.parentElement!.classList.add("pop");
-      }
-      timers.push(window.setTimeout(() => (h.dataset.mood = "happy"), 650));
-      timers.push(window.setTimeout(() => (h.dataset.mood = ""), 2200));
-    };
-    h.addEventListener("click", click);
-    return () => h.removeEventListener("click", click);
-  });
-
-  const loop = () => {
-    const idle = !hasPointer || performance.now() - lastMove > 4000;
-    lookers.forEach((h, i) => {
-      const r = h.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) return;
-      let tx: number, ty: number;
-      if (idle) {
-        tx = wanderX;
-        ty = wanderY;
-      } else {
-        const cx = r.left + r.width * 0.5;
-        const cy = r.top + r.height * 0.46;
-        const dx = px - cx,
-          dy = py - cy;
-        const dist = Math.hypot(dx, dy) || 1;
-        const k = clamp(dist / (r.width * 1.2), 0, 1);
-        tx = (dx / dist) * k;
-        ty = (dy / dist) * k;
-      }
-      const s = state[i];
-      s.x = lerp(s.x, tx, reduce ? 1 : 0.12);
-      s.y = lerp(s.y, ty, reduce ? 1 : 0.12);
-      h.style.setProperty("--lx", s.x.toFixed(3));
-      h.style.setProperty("--ly", s.y.toFixed(3));
-    });
+  const loop = (now: number) => {
+    cx = lerp(cx, tx, 0.08);
+    cy = lerp(cy, ty, 0.08);
+    if (!reduce) tiltEl.style.transform = `perspective(900px) rotateY(${cx * 14}deg) rotateX(${-cy * 8}deg) translate(${cx * 8}px, ${cy * 5}px)`;
+    const quiet = now - lastActive;
+    if (quiet > 7000 && idleStage === 0) {
+      idleStage = 1;
+      set("think", "Hmm... what should I design next?", 4500);
+    } else if (quiet > 14000 && idleStage === 1) {
+      idleStage = 2;
+      set("serious", "Still here? Scroll down, there's more.", 6000);
+    }
+    if (now > hold && me.dataset.face !== base && idleStage === 0) me.dataset.face = base;
     raf = requestAnimationFrame(loop);
   };
+
+  if (finePointer) {
+    document.addEventListener("pointerover", over);
+    addEventListener("pointermove", move, { passive: true });
+    document.documentElement.addEventListener("pointerleave", leave);
+  }
+  addEventListener("pointermove", active, { passive: true });
+  addEventListener("scroll", active, { passive: true });
+  addEventListener("keydown", active);
+  me.addEventListener("click", click);
+  later(() => set("speaking", "Hey, I'm Godson! Poke me.", 2400), 1400);
   raf = requestAnimationFrame(loop);
 
   return () => {
     cancelAnimationFrame(raf);
     timers.forEach(clearTimeout);
+    document.removeEventListener("pointerover", over);
     removeEventListener("pointermove", move);
-    removeEventListener("pointermove", touch);
-    document.removeEventListener("pointerover", moodOn);
-    clickOff.forEach((c) => c());
+    document.documentElement.removeEventListener("pointerleave", leave);
+    removeEventListener("pointermove", active);
+    removeEventListener("scroll", active);
+    removeEventListener("keydown", active);
+    me.removeEventListener("click", click);
   };
 }

@@ -26,8 +26,8 @@ export const profile = {
     "I work directly with stakeholders, developers, product teams and other designers, and I've led design activities across multiple projects at once. I'm trained as an Electrical & Electronics Engineer, which is probably why I love systems that just work.",
   ],
 
-  // Add a photo at /public/images/portrait.jpg and set this to "/images/portrait.jpg"
-  portrait: "/images/avatar.jpg" as string,
+  // Illustration shown in the About section
+  portrait: "/images/me/desk.webp" as string,
 
   // Add your CV at /public/Godson-Udochukwu-CV.pdf to enable the download button
   cv: "/Godson-Udochukwu-CV.pdf",

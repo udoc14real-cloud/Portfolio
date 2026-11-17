@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import Reveal from "@/components/Reveal";
 import ProjectVisual from "@/components/ProjectVisual";
-import AvatarHead from "@/components/AvatarHead";
+import HeroMe from "@/components/HeroMe";
 import { profile, experience, education, services, skills } from "@/data/profile";
 import { featuredProjects, otherProjects } from "@/data/projects";
 
@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="hero" data-chapter="Hello" data-say="That's me, mini version. Let's take a walk!">
+      <section className="hero" data-chapter="Hello" data-pose="wave" data-say="Hey, that's me! Come, let me show you around.">
         <div className="hero-glow" />
         <div className="hero-grid" aria-hidden="true" />
         <div className="container hero-layout">
@@ -56,14 +56,10 @@ export default function Home() {
             <span className="stage-chip chip-1">Product Design</span>
             <span className="stage-chip chip-2">UX Research</span>
             <span className="stage-chip chip-3">Figma wizard</span>
-            <div className="hero-bubble">
-              <span>Psst… my eyes follow you. Click me!</span>
+            <div className="hero-bubble" aria-live="polite">
+              <span>Hey, I&apos;m Godson! Poke me.</span>
             </div>
-            <AvatarHead
-              className="ah-hero"
-              label="Illustrated avatar of Godson"
-              data-lines="Ha! That tickles.|I design for humans, mostly.|6+ years of pixels and coffee.|Scroll down, I'll show you around.|Okay okay, I'm awake!"
-            />
+            <HeroMe />
           </div>
         </div>
       </section>
@@ -92,7 +88,7 @@ export default function Home() {
       </div>
 
       {/* ── Featured work ── */}
-      <section id="work" className="section" data-chapter="Work" data-say="These are a few products I'm proud of.">
+      <section id="work" className="section" data-chapter="Work" data-pose="point" data-say="These are a few products I'm proud of.">
         <div className="container">
           <div className="section-head">
             <Reveal>
@@ -178,22 +174,11 @@ export default function Home() {
       </section>
 
       {/* ── About ── */}
-      <section id="about" className="section" style={{ paddingTop: 0 }} data-chapter="About" data-say="A little about me.">
+      <section id="about" className="section" style={{ paddingTop: 0 }} data-chapter="About" data-pose="think" data-say="A little about me...">
         <div className="container about-grid">
           <Reveal>
             <div className="portrait">
-              {profile.portrait ? (
-                <div className="portrait-orbit">
-                  <span className="orbit orbit-1" />
-                  <span className="orbit orbit-2" />
-                  <Image src={profile.portrait} alt={profile.name} width={276} height={276} className="portrait-photo" />
-                  <span className="orbit-chip chip-a">Figma</span>
-                  <span className="orbit-chip chip-b">UX Research</span>
-                  <span className="orbit-chip chip-c">Design Systems</span>
-                </div>
-              ) : (
-                <span className="portrait-initials">GU</span>
-              )}
+              <Image src="/images/me/desk.webp" alt={`Illustration of ${profile.name} at his desk`} fill sizes="(max-width: 860px) 100vw, 40vw" className="portrait-img" />
               <div className="portrait-tag">
                 <span>{profile.location}</span>
                 <span className="muted">{profile.timezone}</span>
@@ -228,7 +213,7 @@ export default function Home() {
       </section>
 
       {/* ── Services ── */}
-      <section id="services" className="section" style={{ paddingTop: 0 }} data-chapter="Services" data-say="Here's how I can help your team.">
+      <section id="services" className="section" style={{ paddingTop: 0 }} data-chapter="Services" data-pose="holo" data-say="Here's how I can help your team.">
         <div className="container">
           <div className="section-head">
             <Reveal>
@@ -250,7 +235,7 @@ export default function Home() {
       </section>
 
       {/* ── Experience ── */}
-      <section id="experience" className="section" style={{ paddingTop: 0 }} data-chapter="Experience" data-say="The teams I've designed with.">
+      <section id="experience" className="section" style={{ paddingTop: 0 }} data-chapter="Experience" data-pose="crossed" data-say="The teams I've designed with.">
         <div className="container">
           <div className="section-head">
             <Reveal>
@@ -278,7 +263,7 @@ export default function Home() {
       </section>
 
       {/* ── Skills & Education ── */}
-      <section className="section" style={{ paddingTop: 0 }} data-chapter="Toolkit" data-say="My toolkit, and where I learned it.">
+      <section className="section" style={{ paddingTop: 0 }} data-chapter="Toolkit" data-pose="laptop" data-say="My toolkit, and where I learned it.">
         <div className="container two-col">
           <div>
             <Reveal>
@@ -320,7 +305,7 @@ export default function Home() {
       </section>
 
       {/* ── Contact ── */}
-      <section id="contact" className="section" style={{ paddingTop: 0, paddingBottom: 40 }} data-chapter="Contact" data-say="You made it! Let's build something together." data-wave="">
+      <section id="contact" className="section" style={{ paddingTop: 0, paddingBottom: 40 }} data-chapter="Contact" data-pose="a-wave" data-say="You made it! Let's build something together." data-wave="">
         <div className="container">
           <Reveal className="contact">
             <span className="eyebrow">Contact</span>

@@ -17,7 +17,7 @@ const serif = Instrument_Serif({
 });
 
 // Change this to your real domain once deployed
-const siteUrl = "https://godsonudochukwu.com";
+const siteUrl = "https://portfolio-six-iota-x6454lllsa.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -34,8 +34,9 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: profile.shortName,
     type: "website",
+    images: [{ url: "/images/me/og.jpg", width: 1200, height: 630, alt: profile.name }],
   },
-  twitter: { card: "summary_large_image", creator: "@Ud_Graphics" },
+  twitter: { card: "summary_large_image", creator: "@Ud_Graphics", images: ["/images/me/og.jpg"] },
 };
 
 export const viewport: Viewport = {

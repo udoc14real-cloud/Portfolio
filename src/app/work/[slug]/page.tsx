@@ -35,7 +35,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
 
   return (
     <article>
-      <section className="cs-hero" data-chapter="Intro" data-say={`Let me walk you through ${project.title}.`}>
+      <section className="cs-hero" data-chapter="Intro" data-pose="point" data-say={`Let me walk you through ${project.title}.`}>
         <div className="container">
           <Link href="/#work" className="back">
             ← All work
@@ -77,7 +77,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
       </section>
 
       <div className="container">
-        <div className="cs-content" data-chapter="Story" data-say="Here's the thinking behind it.">
+        <div className="cs-content" data-chapter="Story" data-pose="think" data-say="Here's the thinking behind it.">
           <Reveal>
             <span className="eyebrow">Overview</span>
           </Reveal>
@@ -114,7 +114,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
         </div>
 
         {project.gallery && project.gallery.length > 0 && (
-          <div className="cs-gallery" data-chapter="Screens" data-say="And here are the screens!">
+          <div className="cs-gallery" data-chapter="Screens" data-pose="holo" data-say="And here are the screens!">
             {project.gallery.map((src, i) => (
               <Reveal key={src}>
                 <Image src={src} alt={`${project.title}: case study image ${i + 1}`} width={1400} height={900} sizes="(max-width: 1240px) 100vw, 1160px" style={{ height: "auto" }} />
@@ -127,7 +127,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
           </div>
         )}
 
-        <Link href={`/work/${next.slug}`} className="cs-next" data-chapter="Next" data-say="Want to see another one?" data-cursor="Next">
+        <Link href={`/work/${next.slug}`} className="cs-next" data-chapter="Next" data-pose="a-point" data-say="Want to see another one?" data-cursor="Next">
           <span className="eyebrow">Next project</span>
           <div className="cs-next-title">{next.title} →</div>
         </Link>
