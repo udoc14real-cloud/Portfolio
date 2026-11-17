@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import Reveal from "@/components/Reveal";
 import ProjectVisual from "@/components/ProjectVisual";
+import AvatarHead from "@/components/AvatarHead";
 import { profile, experience, education, services, skills } from "@/data/profile";
 import { featuredProjects, otherProjects } from "@/data/projects";
 
@@ -21,17 +22,17 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="hero" data-chapter="Hello" data-say="Hey, I'm Godson! Let's take a walk.">
+      <section className="hero" data-chapter="Hello" data-say="That's me, mini version. Let's take a walk!">
         <div className="hero-glow" />
         <div className="hero-grid" aria-hidden="true" />
-        <div className="container">
-          <span className="status hero-in" style={{ "--d": "0ms" } as React.CSSProperties}>
-            <span className="pulse" /> {profile.availability}
-          </span>
-          <h1 className="hero-title" data-split="">
-            Product designer making <span className="serif">complex</span> feel simple.
-          </h1>
-          <div className="hero-bottom">
+        <div className="container hero-layout">
+          <div className="hero-copy">
+            <span className="status hero-in" style={{ "--d": "0ms" } as React.CSSProperties}>
+              <span className="pulse" /> {profile.availability}
+            </span>
+            <h1 className="hero-title" data-split="">
+              Product designer making <span className="serif">complex</span> feel simple.
+            </h1>
             <p className="hero-intro hero-in" style={{ "--d": "500ms" } as React.CSSProperties}>
               Hi, I&apos;m <strong>Godson</strong>. {profile.intro}
             </p>
@@ -43,10 +44,26 @@ export default function Home() {
                 Get in touch
               </a>
             </div>
+            <div className="scroll-cue hero-in" style={{ "--d": "900ms" } as React.CSSProperties}>
+              <span className="scroll-cue-line" />
+              Scroll to walk with me
+            </div>
           </div>
-          <div className="scroll-cue hero-in" style={{ "--d": "900ms" } as React.CSSProperties}>
-            <span className="scroll-cue-line" />
-            Scroll to walk with me
+
+          <div className="hero-stage hero-in" style={{ "--d": "250ms" } as React.CSSProperties} data-journey-start="">
+            <div className="stage-ring" />
+            <div className="stage-ring stage-ring-2" />
+            <span className="stage-chip chip-1">Product Design</span>
+            <span className="stage-chip chip-2">UX Research</span>
+            <span className="stage-chip chip-3">Figma wizard</span>
+            <div className="hero-bubble">
+              <span>Psst… my eyes follow you. Click me!</span>
+            </div>
+            <AvatarHead
+              className="ah-hero"
+              label="Illustrated avatar of Godson"
+              data-lines="Ha! That tickles.|I design for humans, mostly.|6+ years of pixels and coffee.|Scroll down, I'll show you around.|Okay okay, I'm awake!"
+            />
           </div>
         </div>
       </section>
