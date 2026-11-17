@@ -192,7 +192,7 @@ export default function Home() {
                   <span className="orbit-chip chip-c">Design Systems</span>
                 </div>
               ) : (
-                <span className="portrait-initials">GA</span>
+                <span className="portrait-initials">GU</span>
               )}
               <div className="portrait-tag">
                 <span>{profile.location}</span>

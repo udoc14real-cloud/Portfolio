@@ -17,7 +17,7 @@ const serif = Instrument_Serif({
 });
 
 // Change this to your real domain once deployed
-const siteUrl = "https://godsonani.com";
+const siteUrl = "https://godsonudochukwu.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   description: profile.intro,
   keywords: ["Product Designer", "UI/UX Designer", "UX Lead", "SaaS Design", "Dashboard Design", "Nigeria", "Remote"],
-  authors: [{ name: profile.name }],
+  authors: [{ name: profile.fullName }],
   openGraph: {
     title: `${profile.shortName} | ${profile.role}`,
     description: profile.intro,

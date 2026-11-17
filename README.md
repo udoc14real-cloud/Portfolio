@@ -1,4 +1,4 @@
-# Godson Ani: Portfolio
+# Godson Udochukwu: Portfolio
 
 Personal portfolio site built with **Next.js 16 + React 19 + TypeScript**. No UI libraries, just hand-written CSS.
 
@@ -32,7 +32,7 @@ Text marked ✏️ in `projects.ts` is a draft. Replace it with your real story.
 - **Your photo:** save as `public/images/portrait.jpg`, then in `profile.ts` set `portrait: "/images/portrait.jpg"`
 - **Project covers:** save as e.g. `public/images/projects/hirepilot-cover.jpg`, then add `cover: "/images/projects/hirepilot-cover.jpg"` to that project
 - **Case study screens:** add `gallery: ["/images/projects/hirepilot-1.jpg", ...]`
-- **CV:** save as `public/Godson-Ani-CV.pdf` and a "Download CV" button appears automatically
+- **CV:** save as `public/Godson-Udochukwu-CV.pdf` and a "Download CV" button appears automatically
 
 ## Deploy for free (Vercel)
 

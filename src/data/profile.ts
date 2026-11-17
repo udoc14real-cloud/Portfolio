@@ -3,8 +3,10 @@
 // ─────────────────────────────────────────────────────────────
 
 export const profile = {
-  name: "Godson Udochukwu Ani",
-  shortName: "Godson Ani",
+  name: "Godson Udochukwu",
+  shortName: "Godson Udochukwu",
+  /** Full legal name: only used in hidden metadata for search engines */
+  fullName: "Godson Udochukwu Ani",
   role: "Product & UI/UX Designer",
   location: "Enugu, Nigeria",
   timezone: "WAT (UTC+1)",
@@ -27,8 +29,8 @@ export const profile = {
   // Add a photo at /public/images/portrait.jpg and set this to "/images/portrait.jpg"
   portrait: "/images/avatar.jpg" as string,
 
-  // Add your CV at /public/Godson-Ani-CV.pdf to enable the download button
-  cv: "/Godson-Ani-CV.pdf",
+  // Add your CV at /public/Godson-Udochukwu-CV.pdf to enable the download button
+  cv: "/Godson-Udochukwu-CV.pdf",
 
   socials: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/aniudochukwu" },

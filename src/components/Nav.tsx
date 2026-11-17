@@ -30,9 +30,9 @@ export default function Nav() {
   return (
     <header className={`nav ${scrolled || open ? "scrolled" : ""}`}>
       <div className="container nav-inner">
-        <Link href="/" className="logo" onClick={() => setOpen(false)} aria-label="Godson Ani, home">
-          <span className="logo-mark">GA</span>
-          <span>Godson Ani</span>
+        <Link href="/" className="logo" onClick={() => setOpen(false)} aria-label="Godson Udochukwu, home">
+          <span className="logo-mark">GU</span>
+          <span>Godson Udochukwu</span>
         </Link>
 
         <nav className="nav-links" aria-label="Main">
