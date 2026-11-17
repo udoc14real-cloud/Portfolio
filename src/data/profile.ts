@@ -25,7 +25,7 @@ export const profile = {
   ],
 
   // Add a photo at /public/images/portrait.jpg and set this to "/images/portrait.jpg"
-  portrait: "" as string,
+  portrait: "/images/avatar.jpg" as string,
 
   // Add your CV at /public/Godson-Ani-CV.pdf to enable the download button
   cv: "/Godson-Ani-CV.pdf",

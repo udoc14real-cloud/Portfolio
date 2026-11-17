@@ -1,16 +1,13 @@
 // ─────────────────────────────────────────────────────────────
-//  Your projects. "featured" projects get a full case study page
-//  at /work/<slug>. Others show in the "More work" grid.
+//  Your projects. Content is taken from your Behance case studies.
+//  "featured" projects get a case study page at /work/<slug>
+//  that ends with a link to the full project on Behance.
+//  Everything else links straight to Behance.
 //
-//  Images: drop files in /public/images/projects/ and set `cover`
-//  (and `gallery`) to e.g. "/images/projects/hirepilot-cover.jpg".
-//  Until then a styled placeholder is shown.
-//
-//  Text marked  ✏️  is a draft. Replace it with your real story
-//  (problem, what YOU did, results). Real numbers win interviews.
+//  Images live in /public/images/projects/
 // ─────────────────────────────────────────────────────────────
 
-export type CaseSection = { heading: string; body: string; bullets?: string[] };
+export type CaseSection = { heading: string; body?: string; bullets?: string[] };
 
 export type Project = {
   slug: string;
@@ -21,180 +18,224 @@ export type Project = {
   year: string;
   role: string;
   tools: string[];
-  /** two colours used for the placeholder visual and accents */
+  /** two colours used for accents and fallbacks */
   palette: [string, string];
   featured: boolean;
-  cover?: string;
+  cover: string;
   gallery?: string[];
-  behance?: string;
-  summary: string;
-  metrics?: { value: string; label: string }[];
+  behance: string;
+  collaborators?: string[];
+  summary?: string;
+  facts?: { value: string; label: string }[];
   sections?: CaseSection[];
 };
+
+const img = (f: string) => `/images/projects/${f}`;
+const be = (path: string) => `https://www.behance.net/gallery/${path}`;
 
 export const projects: Project[] = [
   {
     slug: "hirepilot",
     title: "HirePilot",
-    tagline: "A hiring platform that takes the chaos out of recruiting.",
-    category: "Product Design · SaaS",
-    platform: "Web App",
-    year: "2025",
-    role: "Product Designer: research, UX, UI, prototyping",
-    tools: ["Figma", "FigJam"],
-    palette: ["#4F46E5", "#22D3EE"],
+    tagline: "AI-powered recruitment operations for enterprise hiring teams.",
+    category: "Product Design · SaaS · AI",
+    platform: "Desktop Web App (MVP)",
+    year: "2026",
+    role: "Product Designer",
+    tools: ["Figma", "Photoshop"],
+    palette: ["#3E97FF", "#7239EA"],
     featured: true,
-    behance: "https://www.behance.net/udochukwu",
-    // ✏️ draft
+    cover: img("hirepilot-cover.jpg"),
+    gallery: [1, 2, 3, 4, 5, 6].map((n) => img(`hirepilot-${n}.jpg`)),
+    behance: be("250036321/HirePilot-Product-Design-Case-Study"),
+    collaborators: ["Alexander Akinbiyi"],
     summary:
-      "HirePilot helps recruiters and hiring teams manage job postings, candidate pipelines and interviews in one place. I designed the end-to-end product experience, from discovery to a high-fidelity, developer-ready design system.",
+      "HirePilot is an AI-powered recruitment operations platform for enterprise HR teams and staffing agencies. It brings job roles, candidate management, AI-powered matching and recruiter communication into one scalable system. It's a desktop-first MVP focused on cutting manual recruitment effort while improving hiring speed, visibility and candidate-to-role matching.",
+    facts: [
+      { value: "5", label: "Product goals defined" },
+      { value: "4", label: "User groups designed for" },
+      { value: "Job-first", label: "Workflow model with AI matching" },
+    ],
     sections: [
       {
         heading: "The problem",
-        // ✏️ draft
-        body: "Hiring teams juggle spreadsheets, inboxes and calendar invites to move candidates forward. Context gets lost between steps, and candidates wait too long to hear back.",
-      },
-      {
-        heading: "My approach",
-        // ✏️ draft
-        body: "I started by mapping the recruiter journey end-to-end to find where time and information leaked.",
+        body: "Recruitment teams work across fragmented tools, so it's hard to manage candidates, track roles and keep hiring efficient.",
         bullets: [
-          "Stakeholder & recruiter interviews to map the real hiring workflow",
-          "Competitive analysis of leading ATS tools",
-          "Information architecture built around a single candidate pipeline",
-          "Low-fi wireframes → interactive prototype → usability testing",
+          "Heavy manual effort screening and shortlisting candidates",
+          "Slow alignment between job requirements and candidate profiles",
+          "No unified recruitment database",
+          "Inefficient recruiter–candidate communication",
+          "Difficulty finding the most suitable candidates at scale",
         ],
       },
       {
-        heading: "The solution",
-        // ✏️ draft
-        body: "A pipeline-first dashboard where every candidate, note and interview lives on one board, with clear status, quick actions and scheduling built in.",
+        heading: "Who it's for",
+        body: "Enterprise HR departments, staffing agencies and technical recruiters, with hiring managers as secondary users. Our persona, a senior technical recruiter, switches between spreadsheets, email, ATS tools and chat all day, and reviewing large volumes of CVs slows every decision down.",
+      },
+      {
+        heading: "The strategy",
+        body: "Instead of recruiters searching for candidates manually, they define the job first and the system matches candidates automatically.",
+        bullets: [
+          "Recruiter creates a job role and requirements are structured",
+          "AI scans the candidate database and ranks the best fits",
+          "Recruiter reviews recommendations",
+          "The system generates outreach emails and follow-ups",
+        ],
+      },
+      {
+        heading: "Process",
+        body: "Empathise → Research → Ideate → Design. We mapped the information architecture (dashboard, candidates, projects, job matches, emails, scripts and notifications), moved through low-fidelity wireframes and finished with a high-fidelity UI and a style guide built on Inter.",
       },
       {
         heading: "Outcome",
-        // ✏️ add real results/feedback here
-        body: "A complete product design and component library handed off to engineering.",
+        body: "HirePilot shows how recruitment operations can be simplified through structured design and controlled AI integration.",
+        bullets: [
+          "Clearer recruitment workflows",
+          "Less dependence on manual screening",
+          "Faster candidate-to-role matching",
+          "Better visibility across hiring pipelines",
+          "Streamlined recruiter communication",
+        ],
       },
     ],
   },
   {
     slug: "finx",
     title: "FinX Smart Finance",
-    tagline: "Personal finance that feels calm, not complicated.",
+    tagline: "A fintech app that puts people in control of their money.",
     category: "Mobile App · Fintech",
     platform: "iOS & Android",
-    year: "2025",
-    role: "UX/UI Designer",
-    tools: ["Figma"],
-    palette: ["#10B981", "#0EA5E9"],
+    year: "2023",
+    role: "Product Designer: interviews, analytics, UX/UI, design system",
+    tools: ["Figma", "Adobe XD", "Photoshop", "Illustrator"],
+    palette: ["#0A2A5C", "#FFC300"],
     featured: true,
-    behance: "https://www.behance.net/udochukwu",
-    // ✏️ draft
+    cover: img("finx-cover.jpg"),
+    gallery: [1, 2, 3, 4, 5, 6, 7].map((n) => img(`finx-${n}.jpg`)),
+    behance: be("181716697/FinX-Smart-Finance-Mobile-App-UXUI-Design"),
+    collaborators: ["Chiamaka Azuh", "Andrew Ijeh"],
     summary:
-      "FinX is a smart finance app for tracking spending, budgeting and managing money on the go. I designed the mobile UX and UI, focusing on making financial data easy to read at a glance.",
+      "FinX is a fintech app that gives people smart money-management tools, educational resources and insights so they can take control of their financial wellbeing. It brings budgeting, cards, payments and financial education together in one user-centred experience.",
+    facts: [
+      { value: "90+", label: "Screens designed" },
+      { value: "2 wks", label: "Project duration" },
+      { value: "Light + Dark", label: "Full theme support" },
+    ],
     sections: [
       {
         heading: "The problem",
-        body: "Most finance apps overwhelm people with numbers. Users want to know three things fast: what they have, what they spent, and whether they're on track.",
+        body: "People struggle to manage their finances with fragmented tools and little guidance. They needed a single, user-centred app that simplifies money management, improves financial literacy and builds long-term wellbeing.",
       },
       {
-        heading: "My approach",
+        heading: "Research",
+        body: "We ran problem-discovery interviews with 5 respondents, and they confirmed all three of our hypotheses. People want simplicity and ease of use, personalised insights, and educational content inside the app.",
         bullets: [
-          "User research on budgeting habits and pain points",
-          "Prioritised a glanceable home screen around balance, spend and goals",
-          "Designed onboarding, transactions, budgets and insights flows",
-          "Built a reusable mobile component system",
+          "Three persona segments: Gen Z & millennials, adults in their prime earning years, and investors & savvy users",
+          "Competitive analysis of Mint, Robinhood and Acorns",
+          "Key insights: demand for simplicity, personalisation, education, security & privacy, and mobile accessibility",
         ],
-        body: "I designed for clarity first, so every screen answers one question well.",
       },
       {
-        heading: "Outcome",
-        body: "A complete mobile app design with a consistent, scalable UI system.",
+        heading: "Design",
+        body: "Journey maps for tasks like adding a new card shaped the user flows from account setup to payments, history, cards and profile. We then built a design system (Josefin Sans, a navy-and-gold palette, inputs, cards and iconography) and designed 90+ screens in both light and dark mode.",
       },
     ],
   },
   {
     slug: "fitflow",
     title: "FitFlow",
-    tagline: "A fitness app and UI kit built to keep people moving.",
-    category: "Mobile App · Health",
-    platform: "Mobile + UI Kit",
-    year: "2024",
-    role: "Product Designer: case study & UI kit",
-    tools: ["Figma"],
-    palette: ["#F97316", "#EF4444"],
+    tagline: "Find your flow, embrace your fit.",
+    category: "Mobile App · Health & Fitness",
+    platform: "Mobile App + UI Kit",
+    year: "2023",
+    role: "Product Designer: UX/UI, interviews, branding",
+    tools: ["Figma", "Adobe XD", "Photoshop"],
+    palette: ["#FF3B3B", "#FF8A65"],
     featured: true,
-    behance: "https://www.behance.net/udochukwu",
-    // ✏️ draft
+    cover: img("fitflow-cover.jpg"),
+    gallery: [1, 2, 3, 4, 5, 6].map((n) => img(`fitflow-${n}.jpg`)),
+    behance: be("177578789/FitFlow-App-Full-Case-Study-and-UI-Kit"),
+    collaborators: ["Andrew Ijeh", "Chiamaka Azuh"],
     summary:
-      "FitFlow is a workout and wellness app paired with a full UI kit. The goal was a motivating experience that makes planning, tracking and finishing workouts feel effortless.",
+      "FitFlow is a personalised fitness companion for individuals and fitness coaches. It offers tailored workout routines for every level, progress tracking and a supportive community, and it ships with a full UI kit.",
+    facts: [
+      { value: "5", label: "Interview respondents" },
+      { value: "2", label: "Audience segments: individuals & coaches" },
+      { value: "UI Kit", label: "Shipped with the case study" },
+    ],
     sections: [
       {
-        heading: "The problem",
-        body: "People start fitness apps with enthusiasm and drop off within weeks. Plans feel rigid and progress feels invisible.",
-      },
-      {
-        heading: "My approach",
-        body: "I focused on momentum: short sessions, visible progress, and friendly feedback.",
+        heading: "Goals",
         bullets: [
-          "Persona and journey mapping for beginner and regular users",
-          "Workout builder, tracking and progress flows",
-          "A complete UI kit: components, tokens and states",
+          "Personalised workout routines for all levels",
+          "Progress tracking and achievements",
+          "Cardio, strength, flexibility, HIIT and yoga routines",
+          "A supportive community for motivation",
+          "Customisable workout plans in a user-friendly interface",
         ],
       },
       {
-        heading: "Outcome",
-        body: "A full case study and a reusable UI kit that speeds up future fitness products.",
+        heading: "Research",
+        body: "Competitive analysis of Fitbit, Nike Training Club and MyFitnessPal, plus problem-discovery interviews with 5 respondents, confirmed our hypotheses. Users prefer personalised plans, social features boost engagement, and a self-competition score keeps people coming back.",
+      },
+      {
+        heading: "Unique features",
+        bullets: [
+          "FlowScore: a personal fitness metric that encourages self-competition",
+          "Curated workout music playlists",
+          "Real-time sessions with certified instructors",
+          "AI-driven workout recommendations",
+          "Challenges with rewards",
+        ],
+      },
+      {
+        heading: "Design",
+        body: "Journey maps, user flows and an app structure led into wireframes and high-fidelity mockups covering onboarding, discovery, workout views, insights and profile, all backed by a Montserrat-based style guide and iconography set.",
       },
     ],
   },
   {
     slug: "stream",
     title: "Stream",
-    tagline: "Inventory management that businesses can trust.",
-    category: "Enterprise · Dashboard",
-    platform: "Web App",
-    year: "2023",
-    role: "Product Designer",
-    tools: ["Figma"],
-    palette: ["#8B5CF6", "#EC4899"],
+    tagline: "An all-in-one business app for inventory, accounting and marketing.",
+    category: "Mobile App · Business",
+    platform: "Mobile App",
+    year: "2022",
+    role: "UI/UX Designer",
+    tools: ["Figma", "Adobe XD", "Photoshop", "Illustrator"],
+    palette: ["#FF0000", "#F27272"],
     featured: true,
-    behance: "https://www.behance.net/udochukwu",
-    // ✏️ draft. If this is the Fluttertop project, say so and keep the 30% metric
+    cover: img("stream-cover.jpg"),
+    gallery: [1, 2, 3, 4].map((n) => img(`stream-${n}.jpg`)),
+    behance: be("154399137/Stream-Inventory-Management-System"),
     summary:
-      "Stream is an inventory management system that gives businesses a real-time view of stock, suppliers and orders. I designed the dashboards and core workflows to make dense operational data easy to act on.",
-    metrics: [{ value: "30%", label: "Improvement in stock tracking & inventory accuracy" }],
+      "Stream is an all-in-one business solution for inventory management, accounting and marketing. Think of it as a cloud-based inventory system that brings back-office and financial services together on a single dashboard.",
     sections: [
       {
-        heading: "The problem",
-        body: "Businesses were losing money to stock-outs and miscounts. Data existed, but it was buried in tables nobody wanted to read.",
-      },
-      {
-        heading: "My approach",
+        heading: "What I designed",
         bullets: [
-          "Requirements gathering with stakeholders and warehouse users",
-          "Information architecture for products, stock, suppliers and orders",
-          "Dashboard design that highlights what needs attention",
-          "Iterative testing of high-frequency tasks like stock updates",
+          "Product and items-used tracking with daily summaries",
+          "Adding products and the items they use",
+          "Business and user profiles with team management",
+          "Onboarding: sign up, Google sign-in and account creation",
         ],
-        body: "I designed around the actions people take most often, not around the database.",
       },
       {
-        heading: "Outcome",
-        body: "Clearer stock visibility and faster daily workflows, improving tracking and inventory accuracy by 30%.",
+        heading: "Process",
+        body: "I started with low-fidelity wireframes of the core flows, then moved to high-fidelity mockups with a bold red system built on Plus Jakarta Sans and Inter.",
       },
     ],
   },
 
-  // ── More work ──────────────────────────────────────────────
-  { slug: "bitsafe-app", title: "BitSafe", tagline: "Crypto wallet app case study", category: "Mobile · Crypto", platform: "Mobile", year: "2023", role: "UI/UX Designer", tools: ["Figma"], palette: ["#F59E0B", "#7C3AED"], featured: false, summary: "", behance: "https://www.behance.net/udochukwu" },
-  { slug: "bitsafe-web", title: "BitSafe Website", tagline: "Responsive marketing website", category: "Web · Crypto", platform: "Responsive Web", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#7C3AED", "#F59E0B"], featured: false, summary: "", behance: "https://www.behance.net/udochukwu" },
-  { slug: "fitness-dashboard", title: "Fitness Dashboard", tagline: "Health metrics at a glance", category: "Dashboard", platform: "Web", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#06B6D4", "#22C55E"], featured: false, summary: "", behance: "https://www.behance.net/udochukwu" },
-  { slug: "workout-dashboard", title: "Workout Dashboard", tagline: "Training plans & progress", category: "Dashboard", platform: "Web", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#EF4444", "#F97316"], featured: false, summary: "", behance: "https://www.behance.net/udochukwu" },
-  { slug: "cookmate", title: "CookMate", tagline: "Recipe app landing page", category: "Landing Page", platform: "Web", year: "2022", role: "UI Designer", tools: ["Figma"], palette: ["#84CC16", "#F59E0B"], featured: false, summary: "", behance: "https://www.behance.net/udochukwu" },
-  { slug: "hype", title: "Hype", tagline: "Movie trailer app", category: "Mobile · Entertainment", platform: "Mobile", year: "2022", role: "UI Designer", tools: ["Figma"], palette: ["#E11D48", "#6366F1"], featured: false, summary: "", behance: "https://www.behance.net/udochukwu" },
-  { slug: "toy-store", title: "Children Toy Store", tagline: "Playful e-commerce website", category: "Web · E-commerce", platform: "Web", year: "2022", role: "UI Designer", tools: ["Figma"], palette: ["#FACC15", "#38BDF8"], featured: false, summary: "", behance: "https://www.behance.net/udochukwu" },
-  { slug: "nft-app", title: "NFT Marketplace", tagline: "NFT discovery & trading app", category: "Mobile · Web3", platform: "Mobile", year: "2022", role: "UI Designer", tools: ["Figma"], palette: ["#A855F7", "#14B8A6"], featured: false, summary: "", behance: "https://www.behance.net/udochukwu" },
+  // ── More work (links straight to Behance) ───────────────────
+  { slug: "bitsafe-app", title: "BitSafe", tagline: "Crypto wallet app case study", category: "Mobile · Crypto", platform: "Mobile", year: "2023", role: "UI/UX Designer", tools: ["Figma"], palette: ["#F59E0B", "#7C3AED"], featured: false, cover: img("bitsafe-app-cover.jpg"), behance: be("165680413/BitSafe-Crypto-App-Case-Study") },
+  { slug: "bitsafe-web", title: "BitSafe Website", tagline: "Responsive website design", category: "Web · Crypto", platform: "Responsive Web", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#7C3AED", "#F59E0B"], featured: false, cover: img("bitsafe-web-cover.jpg"), behance: be("165901281/BitSafe-Responsive-Website-Design") },
+  { slug: "fitness-dashboard", title: "Fitness Dashboard", tagline: "Health metrics at a glance", category: "Dashboard", platform: "Web", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#06B6D4", "#22C55E"], featured: false, cover: img("fitness-dashboard-cover.jpg"), behance: be("169576021/Fitness-Dashboard") },
+  { slug: "workout-dashboard", title: "Workout Dashboard", tagline: "Training plans & progress", category: "Dashboard", platform: "Web", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#EF4444", "#F97316"], featured: false, cover: img("workout-dashboard-cover.jpg"), behance: be("169576585/Workout-Dashboard") },
+  { slug: "cookmate", title: "CookMate", tagline: "Recipe app landing page", category: "Landing Page", platform: "Web", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#84CC16", "#F59E0B"], featured: false, cover: img("cookmate-cover.jpg"), behance: be("164395611/CookMate-Landing-Page") },
+  { slug: "hype", title: "Hype", tagline: "Movie trailer app", category: "Mobile · Entertainment", platform: "Mobile", year: "2022", role: "UI Designer", tools: ["Figma"], palette: ["#E11D48", "#6366F1"], featured: false, cover: img("hype-cover.jpg"), behance: be("155024159/Hype-Movie-Trailer-App") },
+  { slug: "toy-store", title: "Children Toy Store", tagline: "Playful e-commerce website", category: "Web · E-commerce", platform: "Web", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#FACC15", "#38BDF8"], featured: false, cover: img("toy-store-cover.jpg"), behance: be("169478667/Children-Toy-Website") },
+  { slug: "nft-app", title: "NFT App", tagline: "NFT discovery & trading app", category: "Mobile · Web3", platform: "Mobile", year: "2023", role: "UI Designer", tools: ["Figma"], palette: ["#A855F7", "#14B8A6"], featured: false, cover: img("nft-app-cover.jpg"), behance: be("174409353/NFT-app-Design") },
 ];
 
 export const featuredProjects = projects.filter((p) => p.featured);

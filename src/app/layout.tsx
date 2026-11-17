@@ -3,6 +3,8 @@ import { Inter_Tight, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import Journey from "@/components/Journey";
+import FxBoot from "@/components/FxBoot";
 import { profile } from "@/data/profile";
 
 const sans = Inter_Tight({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -53,9 +55,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
+        <div className="scroll-progress" aria-hidden="true" />
         <Nav />
+        <Journey />
         <main>{children}</main>
         <Footer />
+        <FxBoot />
       </body>
     </html>
   );

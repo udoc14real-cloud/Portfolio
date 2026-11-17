@@ -19,6 +19,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return { title: p.title, description: p.summary || p.tagline };
 }
 
+const BehanceBtn = ({ href, primary = false }: { href: string; primary?: boolean }) => (
+  <a href={href} target="_blank" rel="noreferrer" className={`btn ${primary ? "btn-primary" : ""}`} data-magnetic="" data-cursor="Behance ↗">
+    <span className="be-mark">Bē</span> Full case study on Behance ↗
+  </a>
+);
+
 export default async function CaseStudy({ params }: { params: Params }) {
   const { slug } = await params;
   const project = getProject(slug);
@@ -29,7 +35,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
 
   return (
     <article>
-      <section className="cs-hero">
+      <section className="cs-hero" data-chapter="Intro" data-say={`Let me walk you through ${project.title}.`}>
         <div className="container">
           <Link href="/#work" className="back">
             ← All work
@@ -38,6 +44,9 @@ export default async function CaseStudy({ params }: { params: Params }) {
             <span className="eyebrow">{project.category}</span>
             <h1 className="cs-title">{project.title}</h1>
             <p className="cs-tagline">{project.tagline}</p>
+            <div style={{ marginTop: 32 }}>
+              <BehanceBtn href={project.behance} primary />
+            </div>
           </Reveal>
 
           <Reveal delay={100}>
@@ -55,20 +64,20 @@ export default async function CaseStudy({ params }: { params: Params }) {
                 <dd>{project.year}</dd>
               </div>
               <div>
-                <dt>Tools</dt>
-                <dd>{project.tools.join(", ")}</dd>
+                <dt>{project.collaborators ? "Team" : "Tools"}</dt>
+                <dd>{project.collaborators ? `With ${project.collaborators.join(" & ")}` : project.tools.join(", ")}</dd>
               </div>
             </dl>
           </Reveal>
 
           <Reveal delay={150} className="cs-cover">
-            <ProjectVisual project={project} priority sizes="100vw" />
+            <ProjectVisual project={project} priority sizes="100vw" tilt />
           </Reveal>
         </div>
       </section>
 
       <div className="container">
-        <div className="cs-content">
+        <div className="cs-content" data-chapter="Story" data-say="Here's the thinking behind it.">
           <Reveal>
             <span className="eyebrow">Overview</span>
           </Reveal>
@@ -76,9 +85,9 @@ export default async function CaseStudy({ params }: { params: Params }) {
             <Reveal>
               <p className="cs-summary">{project.summary}</p>
             </Reveal>
-            {project.metrics && (
+            {project.facts && (
               <Reveal className="cs-metrics">
-                {project.metrics.map((m) => (
+                {project.facts.map((m) => (
                   <div key={m.label} className="cs-metric">
                     <strong>{m.value}</strong>
                     <span>{m.label}</span>
@@ -90,7 +99,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
               {project.sections?.map((s) => (
                 <Reveal key={s.heading} className="cs-section">
                   <h2>{s.heading}</h2>
-                  <p>{s.body}</p>
+                  {s.body && <p>{s.body}</p>}
                   {s.bullets && (
                     <ul>
                       {s.bullets.map((b) => (
@@ -101,27 +110,24 @@ export default async function CaseStudy({ params }: { params: Params }) {
                 </Reveal>
               ))}
             </div>
-            {project.behance && (
-              <Reveal>
-                <a href={project.behance} target="_blank" rel="noreferrer" className="btn" style={{ marginTop: 24 }}>
-                  See full project on Behance ↗
-                </a>
-              </Reveal>
-            )}
           </div>
         </div>
 
         {project.gallery && project.gallery.length > 0 && (
-          <div className="cs-gallery" style={{ paddingBottom: 100 }}>
+          <div className="cs-gallery" data-chapter="Screens" data-say="And here are the screens!">
             {project.gallery.map((src, i) => (
               <Reveal key={src}>
-                <Image src={src} alt={`${project.title} screen ${i + 1}`} width={2400} height={1600} sizes="100vw" />
+                <Image src={src} alt={`${project.title}: case study image ${i + 1}`} width={1400} height={900} sizes="(max-width: 1240px) 100vw, 1160px" style={{ height: "auto" }} />
               </Reveal>
             ))}
+            <Reveal className="cs-be-cta">
+              <p>This is a highlight reel. The full case study, with every screen, lives on Behance.</p>
+              <BehanceBtn href={project.behance} primary />
+            </Reveal>
           </div>
         )}
 
-        <Link href={`/work/${next.slug}`} className="cs-next">
+        <Link href={`/work/${next.slug}`} className="cs-next" data-chapter="Next" data-say="Want to see another one?" data-cursor="Next">
           <span className="eyebrow">Next project</span>
           <div className="cs-next-title">{next.title} →</div>
         </Link>
