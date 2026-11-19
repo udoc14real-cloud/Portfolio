@@ -14,14 +14,14 @@ export const profile = {
   email: "udoc14real@gmail.com",
   phone: "+234 813 712 3264",
   phoneHref: "+2348137123264",
-  yearsExperience: "6+",
+  yearsExperience: "7",
 
   headline: "I turn complex workflows into products people actually enjoy using.",
   intro:
-    "Product and UI/UX designer with 6+ years designing SaaS platforms, dashboards, management systems and mobile apps for startups and software teams across the UK, USA, Germany, India and Nigeria.",
+    "Product and UI/UX designer with 7 years in design, designing SaaS platforms, dashboards, management systems and mobile apps for startups and software teams across the UK, USA, Germany, India and Nigeria.",
 
   about: [
-    "I'm a Product and UI/UX Designer with over six years of experience in digital design. I've worked with startups, software companies and remote teams across multiple markets, designing SaaS products, web and mobile apps, dashboards, management systems and enterprise software, from the earliest concept all the way to high-fidelity design and developer handoff.",
+    "I'm a Product and UI/UX Designer with seven years of experience in design, since 2019. I've worked with startups, software companies and remote teams across multiple markets, designing SaaS products, web and mobile apps, dashboards, management systems and enterprise software, from the earliest concept all the way to high-fidelity design and developer handoff.",
     "My particular strength is simplifying complex workflows. I lean on user research, information architecture, prototyping and usability testing to find the clearest path through a problem, then build it out with solid visual design and scalable design systems.",
     "I work directly with stakeholders, developers, product teams and other designers, and I've led design activities across multiple projects at once. I'm trained as an Electrical & Electronics Engineer, which is probably why I love systems that just work.",
   ],
@@ -40,7 +40,7 @@ export const profile = {
   ],
 
   stats: [
-    { value: "6+", label: "Years designing digital products" },
+    { value: "7", label: "Years in design, since 2019" },
     { value: "6", label: "Product teams led & designed for" },
     { value: "5", label: "Countries: UK, US, DE, IN, NG" },
     { value: "30%", label: "Inventory accuracy lift at Fluttertop" },
