@@ -189,7 +189,7 @@ export default function Home() {
             <Reveal>
               <span className="eyebrow">About me</span>
               <p className="about-lead">
-                {profile.yearsExperience} years in design, 4+ of them designing products for startups and software teams, with a soft spot for{" "}
+                {profile.yearsExperience} years in design, 5+ of them designing products for startups and software teams, with a soft spot for{" "}
                 <span className="serif">messy workflows</span> that deserve to be simple.
               </p>
             </Reveal>
